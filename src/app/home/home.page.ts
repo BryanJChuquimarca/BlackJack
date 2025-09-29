@@ -1,6 +1,5 @@
 //probar de hacer split de cartas iguales
 //arreglar el pago por blackjack natural que es 3:2 y no 1:1 (apuestas 100 ganas 150)
-//verificar As
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastController } from '@ionic/angular';
@@ -17,7 +16,7 @@ export class HomePage {
 
   deckId: string = '';
   playerCards: any[] = [];
-  crupierCards: any[] = []; 
+  crupierCards: any[] = [];
   crupierOcultar: boolean = false;
 
 
@@ -46,30 +45,9 @@ export class HomePage {
     const response = await this.http.get<any>(`https://www.deckofcardsapi.com/api/deck/${this.deckId}/draw/?count=${count}`).toPromise();
     return response.cards;
 
-    /*
-    response.cards.forEach((card: any) => {
-
-      let cardValue = this.valorcarta(card.value);
-
-      if (hand === this.playerCards) {
-        if (cardValue === 11 && this.playerScore + 11 > 21) {// condicion por si le toca dos as (2 cartas con valor de 11 cambiar a 1 una carta)
-          this.playerScore += 1;
-        } else {
-          this.playerScore += cardValue;
-        }
-
-      } else {
-        if (cardValue === 11 && this.crupierScore + 11 > 21) {// condicion por si le toca dos as (2 cartas con valor de 11 cambiar a 1 una carta)
-          this.crupierScore += 1;
-        } else {
-          this.crupierScore += cardValue;
-        }
-      }
-    });
-    */
   }
 
-  async ponerApuesta(cantidad: number) { //no deja apostar todo
+  async ponerApuesta(cantidad: number) {
     if (!this.partida_en_curso && cantidad > 0) {
       if (cantidad <= this.balance) {
         this.apuesta_actual += cantidad;
@@ -143,7 +121,7 @@ export class HomePage {
       } else {
         await this.stand();
       }
-    } else {  
+    } else {
       const toast = await this.toastController.create({
         message: 'No puedes doblar la apuesta',
         duration: 1500,
@@ -204,53 +182,6 @@ export class HomePage {
     return total;
   }
 
-  /*
-  valorcarta(value: string): number {
-    if (['KING', 'QUEEN', 'JACK'].includes(value)) {
-      return 10;
-    } else if (value === 'ACE') {
-      return 11;
-    } else {
-      return parseInt(value);
-    }
-  }
-
-  async pedir() {
-    await this.repartir(1, this.playerCards);
-    if (this.playerScore > 21) {
-      this.hasperdido('top')
-      this.ocultarBotones = false
-    }
-  }
-
-  async plantarse() {
-    this.ocultarBotones = false
-    // El crupier pide cartas hasta igualar o superar el puntaje del jugador, o hasta que se pase de 21
-    while (this.crupierScore <= this.playerScore && this.crupierScore < 21) {
-      await this.repartir(1, this.crupierCards);
-    }
-
-    if (this.crupierScore > 21) {
-      this.hasganado('top')
-    } else if (this.crupierScore == 21 && this.playerScore == 21) {
-      this.empate('top')
-    } else {
-      this.hasperdido('top')
-    }
-
-
-
-  }
-
-  reiniciar() {
-    this.playerCards = [];
-    this.crupierCards = [];
-    this.playerScore = 0;
-    this.crupierScore = 0;
-    this.ocultarBotones = true
-    this.crear_mazo();
-  }
-  */
   async hasganado(playerWon: boolean | null, position: 'top') {
     this.partidas_jugadas++;
 
@@ -338,13 +269,16 @@ export class HomePage {
     }
   }
 
-  reiniciar() { //ahora no se utiliza
+  reiniciar() {
     this.playerCards = [];
     this.crupierCards = [];
     this.apuesta_actual = 0;
     this.partida_en_curso = false;
     this.crupierOcultar = false;
-    this.balance += 10;
+    if (this.balance <= 9) {
+      this.balance += 10;
+    }
+
   }
 
 }
