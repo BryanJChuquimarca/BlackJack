@@ -1,20 +1,66 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <ion-card>
+    <ion-card-content>
+      <p> Saldo: <b>{{ balance }}</b></p>
+      <p> Partidas: {{ partidas_jugadas }}</p>
+      <p> Victorias: {{ wins }}</p>
+      <p class="margen">Apuesta actual: <b>{{ apuesta_actual }}</b></p>
+    </ion-card-content>
+    <div class="apuestas">
+      <ion-button [disabled]="partida_en_curso"><img src="/assets/ficharoja10.png" width="55px"
+          (click)="ponerApuesta(10)"></ion-button>
+      <ion-button [disabled]="partida_en_curso"><img src="/assets/fichaverde25.png" width="55px"
+          (click)="ponerApuesta(25)"></ion-button>
+      <ion-button [disabled]="partida_en_curso"><img src="/assets/fichaazul50.png" width="55px"
+          (click)="ponerApuesta(50)"></ion-button>
+      <ion-button [disabled]="partida_en_curso"><img src="/assets/fichanegra100.png" width="55px"
+          (click)="ponerApuesta(100)"></ion-button>
+    </div>
+
+  </ion-card>
+
+
+
+  <h2>Crupier</h2>
+
+  <div class="cards">
+    @for (card of crupierCards; track card; let i = $index) {
+    <img [src]="crupierOcultar && i === 0 ? '/assets/CartaAtras.png' : card.image" />
+    }
+  </div>
+
+  <p class="margen">Total: {{ crupierOcultar ? calculateVisibleTotal() + ' + ??' : calculateTotal(crupierCards) }}</p>
+  <h2>Jugador</h2>
+
+
+  <div class="cards">
+    @for (card of playerCards; track card) {
+    <img [src]="card.image" />
+    }
+  </div>
+  <p class="margen">Total: {{ calculateTotal(playerCards) }}</p>
+
+  <div class="buttons">
+
+
+
+    @if(!partida_en_curso){
+    <ion-button class="botonfijo" color="success" (click)="repartir()"
+      [disabled]="partida_en_curso">Repartir</ion-button>
+
+    <ion-button class="clean-table-btn" (click)="reiniciar()"><ion-icon name="trash-outline"></ion-icon></ion-button>
+    <!--hacer boton propio que cuando no haya balance de dinero-->
+    }
+    @if(partida_en_curso){
+    <ion-button class="botonfijo" color="success" (click)="hit()">Pedir Carta</ion-button>
+    <ion-button class="botonfijo" color="danger" (click)="stand()">Plantarse</ion-button>
+    <ion-button class="clean-table-btn" (click)="reiniciar()" style="display: none;"><ion-icon
+        name="refresh-outline"></ion-icon></ion-button>}
+    @if (playerCards.length === 2 && partida_en_curso) {
+    <ion-button class="botonfijo" color="warning" (click)="doubleDown()">Doblar apuesta</ion-button>
+    }
+
+
   </div>
 </ion-content>
