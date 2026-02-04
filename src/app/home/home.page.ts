@@ -74,7 +74,8 @@ export class HomePage {
       await toast.present();
       return;
     };
-
+    await this.crear_mazo();
+    
     this.playerCards = await this.drawCards(2);
     this.crupierCards = await this.drawCards(2);
     this.crupierOcultar = true;
